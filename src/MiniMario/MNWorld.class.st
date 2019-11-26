@@ -98,7 +98,9 @@ MNWorld >> refreshView [
 	| p t color |
 	p := mario position.
 
-	view elements do: [ :e |
+	view elements doWithIndex: [ :e :index |
+		(e model isNil) ifTrue: [ self halt ].
+		(p isNil) ifTrue: [ self halt ].
 		 t := p + e model.
 		(self isInWorld: t) ifTrue: [ 
 			(world at: t y at: t x) = 0 ifTrue: [ color := Color blue ].
