@@ -12,25 +12,19 @@ Class {
 { #category : #'as yet unclassified' }
 MNMario >> beat [
 	isAnimated ifTrue: [ 
-		phase == #goingUp ifTrue: [ self translateBy: 0 @ -2 ].
-		phase == #doingDown ifTrue: [ self translateBy: 0 @ 2 ].
+		phase == #goingUp ifTrue: [ self translateBy: 0 @ -1 ].
+		phase == #doingDown ifTrue: [ self translateBy: 0 @ 1 ].
 		nbOfMovements := nbOfMovements + 1.
-		nbOfMovements = 20 ifTrue: [ phase := #doingDown ].
-		nbOfMovements = 40 ifTrue: [ isAnimated := false ].
+		nbOfMovements = 5 ifTrue: [ phase := #doingDown ].
+		nbOfMovements = 10 ifTrue: [ isAnimated := false ].
 		 ]
-]
-
-{ #category : #'as yet unclassified' }
-MNMario >> createElement [
-	| b |
-	b := RTBox new size: 10; color: Color red.
-	^ b element
 ]
 
 { #category : #initialization }
 MNMario >> initialize [
 	super initialize.
 	isAnimated := false.
+	position := 0 @ 0
 ]
 
 { #category : #'as yet unclassified' }
@@ -49,10 +43,10 @@ MNMario >> jump [
 
 { #category : #'as yet unclassified' }
 MNMario >> moveLeft [
-	self translateBy: -10 @ 0
+	self translateBy: -1 @ 0
 ]
 
 { #category : #'as yet unclassified' }
 MNMario >> moveRight [
-	self translateBy: 10 @ 0
+	self translateBy: 1 @ 0
 ]
