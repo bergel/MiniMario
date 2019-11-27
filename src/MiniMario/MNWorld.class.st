@@ -21,6 +21,21 @@ MNWorld >> addPlatform: position [
 		self addBrick: position + (i @ 0) ]
 ]
 
+{ #category : #initialization }
+MNWorld >> addTube: positionX [
+ 	| indexY |
+	indexY := self size y - 1.
+	3 timesRepeat: [ 
+		self addTubeCell: positionX @ indexY.
+		indexY := indexY - 1 ].
+]
+
+{ #category : #initialization }
+MNWorld >> addTubeCell: position [
+	(self isInWorld: position)
+		ifTrue: [ world at: position y at: position x put: 2 ]
+]
+
 { #category : #'as yet unclassified' }
 MNWorld >> beat [
 	mario beat.
@@ -65,9 +80,9 @@ MNWorld >> generateWorld [
 		self addPlatform: (r nextInt: self size x) @ (r nextInt: self size y) ].
 	
 	0 to: self size x do: [ :x | self addBrick: (x @ self size y) ].
-	0 to: self size y do: [ :y | self addBrick: (1 @ y); addBrick: (self size x @ y) ]
+	0 to: self size y do: [ :y | self addBrick: (1 @ y); addBrick: (self size x @ y) ].
 	
-	
+	10 timesRepeat: [ self addTube: (r nextInt: self size x) ]
 ]
 
 { #category : #initialization }
@@ -117,7 +132,8 @@ MNWorld >> refreshView [
 		(self isInWorld: t) 
 			ifTrue: [ 
 				(world at: t y at: t x) = 0 ifTrue: [ color := Color blue ].
-				(world at: t y at: t x) = 1 ifTrue: [ color := Color brown ] ]
+				(world at: t y at: t x) = 1 ifTrue: [ color := Color brown ].
+				(world at: t y at: t x) = 2 ifTrue: [ color := Color green ] ]	
 			ifFalse: [ color := Color black ].
 		
 		e model = (0 @ 0) ifTrue: [ color := Color red ].
