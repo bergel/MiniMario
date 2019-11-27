@@ -27,7 +27,7 @@ MNWorld >> beat [
 	"mario beat."
 	mario isAnimated ifFalse: [ 
 		"is mario falling?"
-		(world at: mario position x at: mario position y - 1) = 0 ifTrue: [ mario translateBy: 0 @ 1 ] ].
+		(world at: mario position y + 1 at: mario position x) = 0 ifTrue: [ mario translateBy: 0 @ 1 ] ].
 	self refreshView
 ]
 
@@ -36,8 +36,9 @@ MNWorld >> example [
 	<script: 'self new example'>
 	| w win |
 	w := MNWorld new.
+	w generateWorld.
 	win := w open.
-	win delete.
+	"win delete."
 	100 timesRepeat: [ w beat ].
 	self halt.
 ]
@@ -48,7 +49,8 @@ MNWorld >> generateWorld [
 	r := Random seed: 42.
 	20 timesRepeat: [ 
 		self addPlatform: (r nextInt: self size x) @ (r nextInt: self size y) ].
-	0 to: self size x do: [ :x | self addBrick: (x @ self size y) ]
+	0 to: self size x do: [ :x | self addBrick: (x @ self size y) ].
+	0 to: self size y do: [ :y | self addBrick: (1 @ y); addBrick: (self size x @ y) ]
 	
 	
 ]
@@ -57,7 +59,7 @@ MNWorld >> generateWorld [
 MNWorld >> initialize [
 	super initialize.
 	mario := MNMario new.
-	mario translateTo: 20 @ 10.
+	mario translateTo: 2 @ 2.
 	world := Array2D rows: self size y columns: self size x element: 0
 ]
 
@@ -75,18 +77,21 @@ MNWorld >> mario [
 MNWorld >> open [
 	<script: 'MNWorld new generateWorld; open'>
 
-	| e marioElement |
+	| e |
 	view := RTView new.
 	-5 to: 5 do: [ :x |
 		-5 to: 5 do: [ :y |
 			e := RTBox new size: 11; elementOn: x @ y.
 			view add: e.
-			e translateTo: (x @ y) * 10.
-			e @ RTPopup.
-			 ] ].
+			e translateTo: (x @ y) * 10 ] ].
 	
-"	marioElement := RTBox new size: 10; color: Color red; elementOn: mario position.
-	view add: marioElement."
+	view when: TRKeyDown do: [ :evt | 
+		evt keyValue = 100 ifTrue: [ mario moveRight ].
+		evt keyValue = 97 ifTrue: [ mario moveLeft ].
+		evt keyValue = 119 ifTrue: [ mario jump ].
+		 ].
+	
+
 	view addAnimation: (RTActiveAnimation new blockToExecute: [ self beat ]).
 	self refreshView.
 	^ view open
@@ -99,14 +104,15 @@ MNWorld >> refreshView [
 	p := mario position.
 
 	view elements doWithIndex: [ :e :index |
-		(e model isNil) ifTrue: [ self halt ].
-		(p isNil) ifTrue: [ self halt ].
-		 t := p + e model.
-		(self isInWorld: t) ifTrue: [ 
-			(world at: t y at: t x) = 0 ifTrue: [ color := Color blue ].
-			(world at: t y at: t x) = 1 ifTrue: [ color := Color brown ] ]
-		ifFalse: [ color := Color black ].
-		e shape color: color.
+		t := p + e model.
+		(self isInWorld: t) 
+			ifTrue: [ 
+				(world at: t y at: t x) = 0 ifTrue: [ color := Color blue ].
+				(world at: t y at: t x) = 1 ifTrue: [ color := Color brown ] ]
+			ifFalse: [ color := Color black ].
+		
+		e model = (0 @ 0) ifTrue: [ color := Color red ].
+		e trachelShape color: color.
 	 ].
 	view signalUpdate.
 
@@ -115,5 +121,5 @@ MNWorld >> refreshView [
 
 { #category : #initialization }
 MNWorld >> size [
-	^ 1000 @ 30
+	^ 50 @ 30
 ]
