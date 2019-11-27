@@ -55,6 +55,7 @@ MNMario >> isJumping [
 MNMario >> jump [
 	isJumping ifTrue: [ ^ self ].
 	isFalling ifTrue: [ ^ self ].
+	(game getCellAt: (self position + (0 @ 1))) = 1 ifFalse: [ ^ self ].
 	isJumping := true.
 	phase := #goingUp.
 	nbOfMovements := 0.

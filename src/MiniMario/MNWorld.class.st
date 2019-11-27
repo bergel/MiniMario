@@ -153,7 +153,7 @@ MNWorld >> refreshView [
 
 { #category : #initialization }
 MNWorld >> size [
-	^ 50 @ 30
+	^ 300 @ 20
 ]
 
 { #category : #'as yet unclassified' }
