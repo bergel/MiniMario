@@ -39,7 +39,7 @@ MNWorld >> addTubeCell: position [
 { #category : #'as yet unclassified' }
 MNWorld >> beat [
 	mario beat.
-	mario isAnimated ifFalse: [ 
+	mario isJumping ifFalse: [ 
 		"is mario falling?"
 		(self getCellAt: mario position + (0 @ 1)) = 0 
 			ifTrue: [ 
@@ -113,6 +113,13 @@ MNWorld >> isInWorld: position [
 { #category : #'as yet unclassified' }
 MNWorld >> mario [
 	^ mario
+]
+
+{ #category : #'as yet unclassified' }
+MNWorld >> mario: aMario [
+	mario := aMario.
+	mario game: self.
+	mario translateTo: 2 @ 2
 ]
 
 { #category : #'as yet unclassified' }
