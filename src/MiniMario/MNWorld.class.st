@@ -99,7 +99,7 @@ MNWorld >> mario [
 { #category : #'as yet unclassified' }
 MNWorld >> open [
 	<script: 'MNWorld new open'>
-
+	self inspect.
 	^ view open
 ]
 
@@ -127,4 +127,18 @@ MNWorld >> refreshView [
 { #category : #initialization }
 MNWorld >> size [
 	^ 50 @ 30
+]
+
+{ #category : #'as yet unclassified' }
+MNWorld >> whatMarioSees [
+	| result p t |
+	result := OrderedCollection new.
+	p := mario position.
+	view elements doWithIndex: [ :e :index |
+		t := p + e model.
+		(self isInWorld: t) 
+			ifTrue: [ result add: (world at: t y at: t x) ]
+			ifFalse: [ result add: 1 ].	
+	 ].
+	^ result
 ]
