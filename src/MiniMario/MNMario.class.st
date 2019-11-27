@@ -5,7 +5,8 @@ Class {
 		'position',
 		'phase',
 		'nbOfMovements',
-		'isAnimated'
+		'isAnimated',
+		'game'
 	],
 	#category : #MiniMario
 }
@@ -19,6 +20,16 @@ MNMario >> beat [
 		nbOfMovements = 5 ifTrue: [ phase := #doingDown ].
 		nbOfMovements = 10 ifTrue: [ isAnimated := false ].
 		 ]
+]
+
+{ #category : #accessing }
+MNMario >> game [
+	^ game
+]
+
+{ #category : #accessing }
+MNMario >> game: anObject [
+	game := anObject
 ]
 
 { #category : #initialization }
@@ -59,6 +70,7 @@ MNMario >> position [
 
 { #category : #actions }
 MNMario >> translateBy: aDeltaPosition [
+	(game getCellAt: (position + aDeltaPosition)) = 0 ifFalse: [ ^ self ].
 	position := position + aDeltaPosition
 ]
 

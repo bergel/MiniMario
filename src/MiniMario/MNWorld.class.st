@@ -23,24 +23,11 @@ MNWorld >> addPlatform: position [
 
 { #category : #'as yet unclassified' }
 MNWorld >> beat [
-	<script: 'self new beat'>
-	"mario beat."
+	mario beat.
 	mario isAnimated ifFalse: [ 
 		"is mario falling?"
-		(world at: mario position y + 1 at: mario position x) = 0 ifTrue: [ mario translateBy: 0 @ 1 ] ].
+		(self getCellAt: mario position + (0 @ 1)) = 0 ifTrue: [ mario translateBy: 0 @ 1 ] ].
 	self refreshView
-]
-
-{ #category : #initialization }
-MNWorld >> example [
-	<script: 'self new example'>
-	| w win |
-	w := MNWorld new.
-	w generateWorld.
-	win := w open.
-	"win delete."
-	100 timesRepeat: [ w beat ].
-	self halt.
 ]
 
 { #category : #'as yet unclassified' }
@@ -60,7 +47,7 @@ MNWorld >> generateUI [
 		evt keyValue = 119 ifTrue: [ mario jump ].
 		 ].
 	
-	view addAnimation: (RTActiveAnimation new blockToExecute: [ self beat ]).
+	view addAnimation: (RTActiveAnimation new intervalInMilliseconds: 30; blockToExecute: [ self beat ]).
 	self refreshView.
 
 ]
@@ -80,6 +67,11 @@ MNWorld >> generateWorld [
 ]
 
 { #category : #initialization }
+MNWorld >> getCellAt: aPoint [
+	^ world at: aPoint y at: aPoint x
+]
+
+{ #category : #initialization }
 MNWorld >> initialize [
 	super initialize.
 	self initializeMario.
@@ -90,7 +82,8 @@ MNWorld >> initialize [
 { #category : #initialization }
 MNWorld >> initializeMario [
 	mario := MNMario new.
-	mario translateTo: 2 @ 2
+	mario translateTo: 2 @ 2.
+	mario game: self.
 ]
 
 { #category : #initialization }
