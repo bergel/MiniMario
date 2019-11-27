@@ -26,7 +26,11 @@ MNWorld >> beat [
 	mario beat.
 	mario isAnimated ifFalse: [ 
 		"is mario falling?"
-		(self getCellAt: mario position + (0 @ 1)) = 0 ifTrue: [ mario translateBy: 0 @ 1 ] ].
+		(self getCellAt: mario position + (0 @ 1)) = 0 
+			ifTrue: [ 
+				mario setAsFalling.
+				mario translateBy: 0 @ 1 ]
+			ifFalse: [ mario setAsNotFalling ] ].
 	self refreshView
 ]
 

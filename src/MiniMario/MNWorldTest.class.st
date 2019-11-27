@@ -16,6 +16,16 @@ MNWorldTest >> setUp [
 ]
 
 { #category : #tests }
+MNWorldTest >> testFalling [
+	self deny: mario isFalling.
+	world beat.
+	self assert: mario isFalling.
+	100 timesRepeat: [ world beat ].
+	self deny: mario isFalling.
+
+]
+
+{ #category : #tests }
 MNWorldTest >> testJumping [
 	100 timesRepeat: [ world beat ].
 	self assert: mario position equals: 2 @ 15.
@@ -24,6 +34,20 @@ MNWorldTest >> testJumping [
 	self assert: mario isAnimated.
 	world beat.
 	self assert: mario position equals: (2 @ 14)
+]
+
+{ #category : #tests }
+MNWorldTest >> testJumpingAndFalling [
+	self deny: mario isFalling.
+	self deny: mario isAnimated.
+	world beat.
+	self assert: mario isFalling.
+	self deny: mario isAnimated.
+	
+	mario jump.
+	self assert: mario isFalling.
+	self deny: mario isAnimated.
+
 ]
 
 { #category : #tests }

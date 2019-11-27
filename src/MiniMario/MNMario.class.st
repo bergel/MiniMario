@@ -6,7 +6,8 @@ Class {
 		'phase',
 		'nbOfMovements',
 		'isAnimated',
-		'game'
+		'game',
+		'isFalling'
 	],
 	#category : #MiniMario
 }
@@ -36,7 +37,8 @@ MNMario >> game: anObject [
 MNMario >> initialize [
 	super initialize.
 	isAnimated := false.
-	position := 0 @ 0
+	position := 0 @ 0.
+	isFalling := false.
 ]
 
 { #category : #'as yet unclassified' }
@@ -44,10 +46,15 @@ MNMario >> isAnimated [
 	^ isAnimated
 ]
 
+{ #category : #accessing }
+MNMario >> isFalling [
+	^ isFalling
+]
+
 { #category : #'as yet unclassified' }
 MNMario >> jump [
 	isAnimated ifTrue: [ ^ self ].
-	
+	isFalling ifTrue: [ ^ self ].
 	isAnimated := true.
 	phase := #goingUp.
 	nbOfMovements := 0.
@@ -66,6 +73,16 @@ MNMario >> moveRight [
 { #category : #accessing }
 MNMario >> position [
 	^ position
+]
+
+{ #category : #initialization }
+MNMario >> setAsFalling [
+	isFalling := true
+]
+
+{ #category : #initialization }
+MNMario >> setAsNotFalling [
+	isFalling := false
 ]
 
 { #category : #actions }
