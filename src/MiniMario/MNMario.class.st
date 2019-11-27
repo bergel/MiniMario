@@ -1,7 +1,8 @@
 Class {
 	#name : #MNMario,
-	#superclass : #MNElement,
+	#superclass : #Object,
 	#instVars : [
+		'position',
 		'phase',
 		'nbOfMovements',
 		'isAnimated'
@@ -49,4 +50,19 @@ MNMario >> moveLeft [
 { #category : #'as yet unclassified' }
 MNMario >> moveRight [
 	self translateBy: 1 @ 0
+]
+
+{ #category : #accessing }
+MNMario >> position [
+	^ position
+]
+
+{ #category : #actions }
+MNMario >> translateBy: aDeltaPosition [
+	position := position + aDeltaPosition
+]
+
+{ #category : #actions }
+MNMario >> translateTo: aPosition [
+	position := aPosition
 ]

@@ -44,38 +44,7 @@ MNWorld >> example [
 ]
 
 { #category : #'as yet unclassified' }
-MNWorld >> generateWorld [
-	| r|
-	r := Random seed: 42.
-	20 timesRepeat: [ 
-		self addPlatform: (r nextInt: self size x) @ (r nextInt: self size y) ].
-	0 to: self size x do: [ :x | self addBrick: (x @ self size y) ].
-	0 to: self size y do: [ :y | self addBrick: (1 @ y); addBrick: (self size x @ y) ]
-	
-	
-]
-
-{ #category : #initialization }
-MNWorld >> initialize [
-	super initialize.
-	mario := MNMario new.
-	mario translateTo: 2 @ 2.
-	world := Array2D rows: self size y columns: self size x element: 0
-]
-
-{ #category : #initialization }
-MNWorld >> isInWorld: position [
-	^ (1 @ 1 extent: self size) containsPoint: position
-]
-
-{ #category : #'as yet unclassified' }
-MNWorld >> mario [
-	^ mario
-]
-
-{ #category : #'as yet unclassified' }
-MNWorld >> open [
-	<script: 'MNWorld new generateWorld; open'>
+MNWorld >> generateUI [
 
 	| e |
 	view := RTView new.
@@ -91,11 +60,54 @@ MNWorld >> open [
 		evt keyValue = 119 ifTrue: [ mario jump ].
 		 ].
 	
-
 	view addAnimation: (RTActiveAnimation new blockToExecute: [ self beat ]).
 	self refreshView.
-	^ view open
 
+]
+
+{ #category : #'as yet unclassified' }
+MNWorld >> generateWorld [
+	| r|
+	world := Array2D rows: self size y columns: self size x element: 0.
+	r := Random seed: 42.
+	20 timesRepeat: [ 
+		self addPlatform: (r nextInt: self size x) @ (r nextInt: self size y) ].
+	
+	0 to: self size x do: [ :x | self addBrick: (x @ self size y) ].
+	0 to: self size y do: [ :y | self addBrick: (1 @ y); addBrick: (self size x @ y) ]
+	
+	
+]
+
+{ #category : #initialization }
+MNWorld >> initialize [
+	super initialize.
+	self initializeMario.
+	self generateWorld.
+	self generateUI
+]
+
+{ #category : #initialization }
+MNWorld >> initializeMario [
+	mario := MNMario new.
+	mario translateTo: 2 @ 2
+]
+
+{ #category : #initialization }
+MNWorld >> isInWorld: position [
+	^ (1 @ 1 extent: self size) containsPoint: position
+]
+
+{ #category : #'as yet unclassified' }
+MNWorld >> mario [
+	^ mario
+]
+
+{ #category : #'as yet unclassified' }
+MNWorld >> open [
+	<script: 'MNWorld new open'>
+
+	^ view open
 ]
 
 { #category : #'as yet unclassified' }
