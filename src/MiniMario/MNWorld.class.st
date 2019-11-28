@@ -99,7 +99,7 @@ MNWorld >> initialize [
 	super initialize.
 	self initializeMario.
 	self generateWorld.
-	self generateUI
+	"self generateUI"
 ]
 
 { #category : #initialization }
@@ -136,6 +136,8 @@ MNWorld >> open [
 { #category : #'as yet unclassified' }
 MNWorld >> refreshView [
 	| p t color |
+	view isNil ifTrue: [ ^ self ].
+	
 	p := mario position.
 
 	view elements doWithIndex: [ :e :index |
@@ -162,15 +164,18 @@ MNWorld >> size [
 
 { #category : #'as yet unclassified' }
 MNWorld >> whatMarioSees [
-	| result p t |
+	| result p t upperBounds lowerBounds |
 	result := OrderedCollection new.
 	p := mario position.
-	view elements doWithIndex: [ :e :index |
-		t := p + e model.
-		(self isInWorld: t) 
+	
+	upperBounds := self windowSize // 2.
+	lowerBounds := upperBounds negated.
+	lowerBounds to: upperBounds do: [ :x |
+		lowerBounds to: upperBounds do: [ :y |
+			t := p + (x @ y).
+			(self isInWorld: t) 
 			ifTrue: [ result add: (world at: t y at: t x) ]
-			ifFalse: [ result add: 1 ].	
-	 ].
+			ifFalse: [ result add: 1 ] ] ].
 	^ result
 ]
 

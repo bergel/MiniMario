@@ -28,12 +28,12 @@ MNWorldTest >> testFalling [
 { #category : #tests }
 MNWorldTest >> testJumping [
 	100 timesRepeat: [ world beat ].
-	self assert: mario position equals: 2 @ 15.
+	self assert: mario position equals: 2 @ 5.
 	self deny: mario isJumping.
 	mario jump.
 	self assert: mario isJumping.
 	world beat.
-	self assert: mario position equals: (2 @ 14)
+	self assert: mario position equals: (2 @ 4)
 ]
 
 { #category : #tests }
@@ -67,5 +67,12 @@ MNWorldTest >> testRunSeveralBeats [
 	"No error should occur"
 	self assert: mario position equals: 2 @ 2.
 	100 timesRepeat: [ world beat ].
-	self assert: mario position equals: 2 @ 15.
+	self assert: mario position equals: 2 @ 5.
+]
+
+{ #category : #tests }
+MNWorldTest >> testWhatMarioSees [
+	"No error should occur"
+	| s |
+	s := world whatMarioSees
 ]
