@@ -52,19 +52,22 @@ MNWorld >> beat [
 { #category : #'as yet unclassified' }
 MNWorld >> generateUI [
 
-	| e |
+	| e upperBounds lowerBounds cellSizeInPixel |
 	view := RTView new.
-	-5 to: 5 do: [ :x |
-		-5 to: 5 do: [ :y |
-			e := RTBox new size: 11; elementOn: x @ y.
+	
+	cellSizeInPixel := 25.
+	upperBounds := self windowSize // 2.
+	lowerBounds := upperBounds negated.
+	lowerBounds to: upperBounds do: [ :x |
+		lowerBounds to: upperBounds do: [ :y |
+			e := RTBox new size: cellSizeInPixel + 1; elementOn: x @ y.
 			view add: e.
-			e translateTo: (x @ y) * 10 ] ].
+			e translateTo: (x @ y) * cellSizeInPixel ] ].
 	
 	view when: TRKeyDown do: [ :evt | 
 		evt keyValue = 100 ifTrue: [ mario moveRight ].
 		evt keyValue = 97 ifTrue: [ mario moveLeft ].
-		evt keyValue = 119 ifTrue: [ mario jump ].
-		 ].
+		evt keyValue = 119 ifTrue: [ mario jump ] ].
 	
 	view addAnimation: (RTActiveAnimation new intervalInMilliseconds: 30; blockToExecute: [ self beat ]).
 	self refreshView.
@@ -75,14 +78,15 @@ MNWorld >> generateUI [
 MNWorld >> generateWorld [
 	| r|
 	world := Array2D rows: self size y columns: self size x element: 0.
+	1 to: self size x do: [ :x | self addBrick: (x @ self size y); addBrick: (x @ 1) ].
+	1 to: self size y do: [ :y | self addBrick: (1 @ y); addBrick: (self size x @ y) ].
+
+	
 	r := Random seed: 42.
-	20 timesRepeat: [ 
+	100 timesRepeat: [ 
 		self addPlatform: (r nextInt: self size x) @ (r nextInt: self size y) ].
 	
-	0 to: self size x do: [ :x | self addBrick: (x @ self size y) ].
-	0 to: self size y do: [ :y | self addBrick: (1 @ y); addBrick: (self size x @ y) ].
-	
-	10 timesRepeat: [ self addTube: (r nextInt: self size x) ]
+	30 timesRepeat: [ self addTube: (r nextInt: self size x) ]
 ]
 
 { #category : #initialization }
@@ -153,7 +157,7 @@ MNWorld >> refreshView [
 
 { #category : #initialization }
 MNWorld >> size [
-	^ 300 @ 20
+	^ 300 @ 10
 ]
 
 { #category : #'as yet unclassified' }
@@ -168,4 +172,9 @@ MNWorld >> whatMarioSees [
 			ifFalse: [ result add: 1 ].	
 	 ].
 	^ result
+]
+
+{ #category : #'as yet unclassified' }
+MNWorld >> windowSize [
+	^ 10
 ]
