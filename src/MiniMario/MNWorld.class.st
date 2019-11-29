@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'world',
 		'mario',
-		'view'
+		'view',
+		'random'
 	],
 	#category : #MiniMario
 }
@@ -76,17 +77,14 @@ MNWorld >> generateUI [
 
 { #category : #'as yet unclassified' }
 MNWorld >> generateWorld [
-	| r|
 	world := Array2D rows: self size y columns: self size x element: 0.
 	1 to: self size x do: [ :x | self addBrick: (x @ self size y); addBrick: (x @ 1) ].
 	1 to: self size y do: [ :y | self addBrick: (1 @ y); addBrick: (self size x @ y) ].
 
-	
-	r := Random seed: 42.
 	100 timesRepeat: [ 
-		self addPlatform: (r nextInt: self size x) @ (r nextInt: self size y) ].
+		self addPlatform: (random nextInt: self size x) @ (random nextInt: self size y) ].
 	
-	30 timesRepeat: [ self addTube: (r nextInt: self size x) ]
+	30 timesRepeat: [ self addTube: (random nextInt: self size x) ]
 ]
 
 { #category : #initialization }
@@ -98,8 +96,8 @@ MNWorld >> getCellAt: aPoint [
 MNWorld >> initialize [
 	super initialize.
 	self initializeMario.
-	self generateWorld.
-	"self generateUI"
+	self seed: 42.
+
 ]
 
 { #category : #initialization }
@@ -130,6 +128,7 @@ MNWorld >> mario: aMario [
 MNWorld >> open [
 	<script: 'MNWorld new open'>
 	self inspect.
+	self generateUI.
 	^ view open
 ]
 
@@ -155,6 +154,13 @@ MNWorld >> refreshView [
 	view signalUpdate.
 
 	
+]
+
+{ #category : #initialization }
+MNWorld >> seed: aNumber [
+	random := Random seed: aNumber.
+	self generateWorld.
+
 ]
 
 { #category : #initialization }
