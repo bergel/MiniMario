@@ -51,6 +51,22 @@ MNWorldTest >> testJumpingAndFalling [
 ]
 
 { #category : #tests }
+MNWorldTest >> testMonster [
+	| w |
+	w := MNWorld new.
+	w addMonster: (MNMonster new translateTo: 3 @ 3).
+	100 timesRepeat: [ w beat ]
+]
+
+{ #category : #tests }
+MNWorldTest >> testMonster2 [
+	| w |
+	w := MNWorld new.
+	w addMonster: (MNMonster new translateTo: 2 @ 2).
+	100 timesRepeat: [ w beat ]
+]
+
+{ #category : #tests }
 MNWorldTest >> testMovingMario [
 	"No error should occur"
 	self assert: mario position equals: 2 @ 2.

@@ -5,7 +5,9 @@ Class {
 		'world',
 		'mario',
 		'view',
-		'random'
+		'random',
+		'monsters',
+		'gameIsRunning'
 	],
 	#category : #MiniMario
 }
@@ -14,6 +16,12 @@ Class {
 MNWorld >> addBrick: position [
 	(self isInWorld: position)
 		ifTrue: [ world at: position y at: position x put: 1 ]
+]
+
+{ #category : #initialization }
+MNWorld >> addMonster: aMonster [
+	monsters add: aMonster.
+	aMonster game: self.
 ]
 
 { #category : #initialization }
@@ -39,15 +47,17 @@ MNWorld >> addTubeCell: position [
 
 { #category : #'as yet unclassified' }
 MNWorld >> beat [
+	gameIsRunning ifFalse: [ ^ self ].
+	monsters do: #beat.
 	mario beat.
-	mario isJumping ifFalse: [ 
-		"is mario falling?"
-		(self getCellAt: mario position + (0 @ 1)) = 0 
-			ifTrue: [ 
-				mario setAsFalling.
-				mario translateBy: 0 @ 1 ]
-			ifFalse: [ mario setAsNotFalling ] ].
 	self refreshView
+]
+
+{ #category : #accessing }
+MNWorld >> gameOver [
+	gameIsRunning := false.
+	view ifNil: [ ^ self ].
+	view add: ((RTLabel new color: Color red; text: 'GAME OVER') element translateBy: 0 @ -100)
 ]
 
 { #category : #'as yet unclassified' }
@@ -97,7 +107,8 @@ MNWorld >> initialize [
 	super initialize.
 	self initializeMario.
 	self seed: 42.
-
+	self initializeMonsters.
+	gameIsRunning := true
 ]
 
 { #category : #initialization }
@@ -105,6 +116,15 @@ MNWorld >> initializeMario [
 	mario := MNMario new.
 	mario translateTo: 2 @ 2.
 	mario game: self.
+]
+
+{ #category : #initialization }
+MNWorld >> initializeMonsters [
+	monsters := OrderedCollection new.
+	10 timesRepeat: [ 
+		| m |
+		m := MNMonster new translateTo: (random nextInt: self size x) @ 2.
+		self addMonster: m ]
 ]
 
 { #category : #initialization }
@@ -124,6 +144,11 @@ MNWorld >> mario: aMario [
 	mario translateTo: 2 @ 2
 ]
 
+{ #category : #accessing }
+MNWorld >> monsters [
+	^ monsters
+]
+
 { #category : #'as yet unclassified' }
 MNWorld >> open [
 	<script: 'MNWorld new open'>
@@ -136,7 +161,7 @@ MNWorld >> open [
 MNWorld >> refreshView [
 	| p t color |
 	view isNil ifTrue: [ ^ self ].
-	
+	gameIsRunning ifFalse: [ ^ self ].
 	p := mario position.
 
 	view elements doWithIndex: [ :e :index |
@@ -151,6 +176,14 @@ MNWorld >> refreshView [
 		e model = (0 @ 0) ifTrue: [ color := Color red ].
 		e trachelShape color: color.
 	 ].
+
+	monsters do: [ :m |
+		t := m position - p.
+		t x abs < 10 ifTrue: [ 
+			| cell |
+			cell := view elements elementFromModel: t.
+			cell notNil ifTrue: [ cell trachelShape color: Color yellow ] ]. 
+	].
 	view signalUpdate.
 
 	
